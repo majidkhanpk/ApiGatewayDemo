@@ -31,3 +31,5 @@ F:\DotNetLearning\CWM\ApiGatewayDemo\ProductService\obj\Debug\net10.0\refint\Pro
 F:\DotNetLearning\CWM\ApiGatewayDemo\ProductService\obj\Debug\net10.0\ProductService.pdb
 F:\DotNetLearning\CWM\ApiGatewayDemo\ProductService\obj\Debug\net10.0\ProductService.genruntimeconfig.cache
 F:\DotNetLearning\CWM\ApiGatewayDemo\ProductService\obj\Debug\net10.0\ref\ProductService.dll
+F:\DotNetLearning\CWM\ApiGatewayDemo\ProductService\obj\Debug\net10.0\ProductService.sourcelink.json
+F:\DotNetLearning\CWM\ApiGatewayDemo\ProductService\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

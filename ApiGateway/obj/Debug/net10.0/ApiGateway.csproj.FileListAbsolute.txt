@@ -39,3 +39,5 @@ F:\DotNetLearning\CWM\ApiGatewayDemo\ApiGateway\obj\Debug\net10.0\refint\ApiGate
 F:\DotNetLearning\CWM\ApiGatewayDemo\ApiGateway\obj\Debug\net10.0\ApiGateway.pdb
 F:\DotNetLearning\CWM\ApiGatewayDemo\ApiGateway\obj\Debug\net10.0\ApiGateway.genruntimeconfig.cache
 F:\DotNetLearning\CWM\ApiGatewayDemo\ApiGateway\obj\Debug\net10.0\ref\ApiGateway.dll
+F:\DotNetLearning\CWM\ApiGatewayDemo\ApiGateway\obj\Debug\net10.0\ApiGateway.sourcelink.json
+F:\DotNetLearning\CWM\ApiGatewayDemo\ApiGateway\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
