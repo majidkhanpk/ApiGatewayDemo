@@ -1,3 +1,4 @@
+using ApiGateway;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -9,6 +10,8 @@ builder.Configuration.AddJsonFile("ocelot.json");
 builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 // Use Ocelot
 await app.UseOcelot();

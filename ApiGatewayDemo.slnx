@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Project Path="ApiGateway/ApiGateway.csproj" />
   <Project Path="OrderService/OrderService.csproj" />
   <Project Path="ProductService/ProductService.csproj" />
