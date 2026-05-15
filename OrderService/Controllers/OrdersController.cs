@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderService.Model;
 using OrderService.RabbitMQ;
-
+using OrderService.Services;
 
 namespace OrderService.Controllers
 {
@@ -8,26 +9,39 @@ namespace OrderService.Controllers
     [Route("api/{controller}")]
     public class OrdersController : ControllerBase
     {
+        private readonly IOrderMgrService _orderMgrService;
+
+        public OrdersController(IOrderMgrService orderMgrService)
+        {
+            _orderMgrService = orderMgrService;
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(new[] { "Order1", "Order2" });
+            return Ok(_orderMgrService.GetAll());
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            return Ok($"Order {id}");
+            var order = _orderMgrService.GetById(id);
+            if ( order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(order);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] object order)
+        public IActionResult Create([FromBody] Order order)
         {
-            return Ok("Order created");
+            return Ok(_orderMgrService.Create(order));
         }
 
         [HttpPost]
-        public IActionResult CreateOrder([FromBody] object order,
+        public IActionResult CreateOrder([FromBody] Order order,
                                  [FromServices] RabbitPublisher publisher)
         {
             publisher.Send(order);

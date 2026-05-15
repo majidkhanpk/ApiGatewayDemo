@@ -1,4 +1,4 @@
-using ApiGateway;
+using ApiGateway.Middleware;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
