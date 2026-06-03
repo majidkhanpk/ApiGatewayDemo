@@ -13,25 +13,12 @@ namespace ProductService.RabbitMQ
         private IModel _channel;
         private string _queue;
 
-        public OrderConsumer(IConfiguration config)
+        public OrderConsumer(RabbitMQConnection rabbitConnection, IConfiguration config)
         {
             _config = config;
-            InitRabbitMQ();
-        }
+            _connection = rabbitConnection.GetConnection();
 
-        private void InitRabbitMQ()
-        {
-            var factory = new ConnectionFactory()
-            {
-                HostName = _config["RabbitMQ:Host"],
-                Port = int.Parse(_config["RabbitMQ:Port"]),
-                UserName = _config["RabbitMQ:UserName"],
-                Password = _config["RabbitMQ:Password"]
-            };
-
-            _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-
             _queue = _config["RabbitMQ:Queue"];
 
             _channel.QueueDeclare(
@@ -42,6 +29,7 @@ namespace ProductService.RabbitMQ
                 arguments: null
             );
         }
+
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {

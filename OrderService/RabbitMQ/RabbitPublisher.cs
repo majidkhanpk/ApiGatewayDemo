@@ -13,19 +13,10 @@ namespace OrderService.RabbitMQ
         private readonly IModel _channel;
         private readonly string _queue;
 
-        public RabbitPublisher(IConfiguration config)
+        public RabbitPublisher(RabbitMQConnection rabbitConnection, IConfiguration config)
         {
             _config = config;
-
-            var factory = new ConnectionFactory()
-            {
-                HostName = _config["RabbitMQ:Host"],
-                Port = int.Parse(_config["RabbitMQ:Port"]),
-                UserName = _config["RabbitMQ:UserName"],
-                Password = _config["RabbitMQ:Password"]
-            };
-
-            _connection = factory.CreateConnection();
+            _connection = rabbitConnection.GetConnection();
             _channel = _connection.CreateModel();
             _queue = _config["RabbitMQ:Queue"];
 

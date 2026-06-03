@@ -4,6 +4,7 @@ using OrderService.Repositories;
 using OrderService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<RabbitMQConnection>();
 builder.Services.AddSingleton<RabbitPublisher>();
 builder.Services.AddScoped<IOrderMgrService, OrderMgrService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
