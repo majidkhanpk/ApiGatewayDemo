@@ -10,10 +10,12 @@ namespace OrderService.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderMgrService _orderMgrService;
+        private readonly RabbitPublisher _publisher;
 
-        public OrdersController(IOrderMgrService orderMgrService)
+        public OrdersController(IOrderMgrService orderMgrService, RabbitPublisher publisher)
         {
             _orderMgrService = orderMgrService;
+            _publisher = publisher;
         }
 
         [HttpGet]
@@ -37,16 +39,21 @@ namespace OrderService.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] Order order)
         {
-            return Ok(_orderMgrService.Create(order));
+            // 1. Save in DB
+            var createdOrder = _orderMgrService.Create(order);
+            Console.WriteLine("new order is created"+ createdOrder.Id);
+            // 2. Send event to RabbitMQ
+            _publisher.SendOrderCreated(createdOrder);
+            return Ok(createdOrder);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public IActionResult CreateOrder([FromBody] Order order,
                                  [FromServices] RabbitPublisher publisher)
         {
             publisher.Send(order);
 
             return Ok("Order sent to queue");
-        }
+        }*/
     }
 }

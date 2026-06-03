@@ -1,4 +1,6 @@
 ﻿using RabbitMQ.Client;
+using System.Collections;
+using System.Data.Common;
 using System.Text;
 using System.Text.Json;
 
@@ -7,29 +9,78 @@ namespace OrderService.RabbitMQ
     public class RabbitPublisher
     {
         private readonly IConfiguration _config;
+        private readonly IConnection _connection;
+        private readonly IModel _channel;
+        private readonly string _queue;
 
         public RabbitPublisher(IConfiguration config)
         {
             _config = config;
+
+            var factory = new ConnectionFactory()
+            {
+                HostName = _config["RabbitMQ:Host"],
+                Port = int.Parse(_config["RabbitMQ:Port"]),
+                UserName = _config["RabbitMQ:UserName"],
+                Password = _config["RabbitMQ:Password"]
+            };
+
+            _connection = factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _queue = _config["RabbitMQ:Queue"];
+
+            // Declare queue once
+            _channel.QueueDeclare(
+                queue: _queue,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
+
         }
 
-        public void Send(object message)
+        public void SendOrderCreated(object order)
         {
-            //var factory = new ConnectionFactory()
-            //{
-            //    HostName = _config["RabbitMQ:Host"]
-            //};
+            var envelope = new EventEnvelope
+            {
+                EventType = "OrderCreated",
+                EventVersion = 1,
+                Data = order,
+                Timestamp = DateTime.UtcNow
+            };
 
-            //using var connection = factory.CreateConnection();
-            //using var channel = connection.CreateModel();
+            var json = JsonSerializer.Serialize(envelope);
+            var body = Encoding.UTF8.GetBytes(json);
 
-            //var queue = _config["RabbitMQ:Queue"];
+            var properties = _channel.CreateBasicProperties();
+            properties.Persistent = true;
 
-            //channel.QueueDeclare(queue, true, false, false);
-
-            //var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
-
-            //channel.BasicPublish("", queue, null, body);
+            _channel.BasicPublish(
+                exchange: "",
+                routingKey: _queue,
+                basicProperties: properties,
+                body: body
+            );
         }
+
+        //public void Send(object message)
+        //{
+        //var factory = new ConnectionFactory()
+        //{
+        //    HostName = _config["RabbitMQ:Host"]
+        //};
+
+        //using var connection = factory.CreateConnection();
+        //using var channel = connection.CreateModel();
+
+        //var queue = _config["RabbitMQ:Queue"];
+
+        //channel.QueueDeclare(queue, true, false, false);
+
+        //var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
+
+        //channel.BasicPublish("", queue, null, body);
+        // }
     }
 }

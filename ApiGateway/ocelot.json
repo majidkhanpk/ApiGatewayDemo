@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/orders",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [ "GET", "POST" ],
       "AddHeadersToRequest": {
         "X-Correlation-ID": "CorrelationId"
       }
@@ -27,7 +27,7 @@
         }
       ],
       "UpstreamPathTemplate": "/products",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [ "GET","POST" ],
       "AddHeadersToRequest": {
         "X-Correlation-ID": "CorrelationId"
       }
