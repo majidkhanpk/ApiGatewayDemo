@@ -21,12 +21,34 @@ namespace ProductService.RabbitMQ
             _channel = _connection.CreateModel();
             _queue = _config["RabbitMQ:Queue"];
 
-            _channel.QueueDeclare(
+            /*_channel.QueueDeclare(
                 queue: _queue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
+            );*/
+
+            // ✅ Declare exchange
+            _channel.ExchangeDeclare(
+                exchange: "order.exchange",
+                type: ExchangeType.Topic,
+                durable: true
+            );
+
+            // ✅ Declare queue
+            _channel.QueueDeclare(
+                queue: "product_queue",
+                durable: true,
+                exclusive: false,
+                autoDelete: false
+            );
+
+            // ✅ Bind queue to exchange
+            _channel.QueueBind(
+                queue: "product_queue",
+                exchange: "order.exchange",
+                routingKey: "order.created"
             );
         }
 
@@ -59,10 +81,6 @@ namespace ProductService.RabbitMQ
                         Console.WriteLine($"📦 Product: {order.ProductName}");
                         Console.WriteLine($"🔢 Quantity: {order.Quantity}");
                         Console.WriteLine($"🔢 Total Price: {order.TotalPrice}");
-
-                        // 👉 BUSINESS LOGIC HERE
-                        // Example: reduce stock
-                        // _productService.ReduceStock(order.ProductId, order.Quantity);
                     }
 
                     // Manual ACK (safe processing)
@@ -77,8 +95,14 @@ namespace ProductService.RabbitMQ
                 }
             };
 
-            _channel.BasicConsume(
+            /*_channel.BasicConsume(
                 queue: _queue,
+                autoAck: false,
+                consumer: consumer
+            );*/
+
+            _channel.BasicConsume(
+                queue: "product_queue",
                 autoAck: false,
                 consumer: consumer
             );

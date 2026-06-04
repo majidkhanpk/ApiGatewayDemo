@@ -21,12 +21,19 @@ namespace OrderService.RabbitMQ
             _queue = _config["RabbitMQ:Queue"];
 
             // Declare queue once
-            _channel.QueueDeclare(
+            /*_channel.QueueDeclare(
                 queue: _queue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
+            );*/
+
+            // Declare exchange
+            _channel.ExchangeDeclare(
+                exchange: "order.exchange",
+                type: ExchangeType.Topic,
+                durable: true
             );
 
         }
@@ -47,31 +54,22 @@ namespace OrderService.RabbitMQ
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 
-            _channel.BasicPublish(
+            //Using queue name as routing key for simplicity
+            /*_channel.BasicPublish(
                 exchange: "",
                 routingKey: _queue,
                 basicProperties: properties,
                 body: body
+            );*/
+
+            _channel.BasicPublish(
+                exchange: "order.exchange",
+                routingKey: "order.created",
+                basicProperties: properties,
+                body: body
             );
+
+            Console.WriteLine("📤 Sent: order.created");
         }
-
-        //public void Send(object message)
-        //{
-        //var factory = new ConnectionFactory()
-        //{
-        //    HostName = _config["RabbitMQ:Host"]
-        //};
-
-        //using var connection = factory.CreateConnection();
-        //using var channel = connection.CreateModel();
-
-        //var queue = _config["RabbitMQ:Queue"];
-
-        //channel.QueueDeclare(queue, true, false, false);
-
-        //var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
-
-        //channel.BasicPublish("", queue, null, body);
-        // }
     }
 }
